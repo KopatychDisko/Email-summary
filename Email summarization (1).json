@@ -1,0 +1,263 @@
+{
+  "name": "Email summarization",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "readStatus": "unread",
+          "receivedAfter": "2025-07-19T00:00:00"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "3b983a06-c44b-4f85-b401-34498d3aba02",
+      "name": "Get many messages",
+      "webhookId": "9893ed4d-c630-4ea7-b043-4d5fda8f2790",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VhIFfTXt1RduyMZ1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2d7daf9-486b-4f66-8ba7-090a4a162903",
+              "name": "message",
+              "value": "=Отправитель: \n{{ $json.From }}\n\nТема:\n{{ $json.Subject }}\n\nТекст: \n{{ $json.snippet }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        0
+      ],
+      "id": "0b676922-8b8e-422a-b95f-2b4e2e688bd9",
+      "name": "Combine info mesasges"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        576,
+        0
+      ],
+      "id": "c98570f9-8548-4a7f-a6c6-926f986c8615",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an AI assistant tasked with filtering emails for importance and providing concise summaries of only the important ones, along with sender information, for user notification.\n\nFor each given email, perform the following two primary tasks:\n\nAssess Importance : Determine the importance of the email on a scale from 1 to 5, where 1 is \"Not Important\" and 5 is \"Highly Important\". Consider factors like security alerts, account changes, financial notifications, direct personal requests, deadlines, and critical updates.\nSummarize if Important : If the email's importance is rated 4 or 5, create a concise summary of its content (maximum 60 words). Focus on the main topic, key information, and any required actions.\nOutput Format:\nDisplay only important emails (level 4-5) using this clean format:\n\n📧 From: [Sender Name / Sender Email]\n📝 Subject: [Brief summary of the email content]\n\n---------------------------\n\nAnswer only on Russain language and send only info about messages"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        752,
+        0
+      ],
+      "id": "cf4ffa8a-fcee-448d-abc2-861b855def06",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat-v3-0324:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        736,
+        160
+      ],
+      "id": "189e3d5f-ba92-4349-a58c-63d6ffc18d98",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "7EGYEHeLfOJY2sJv",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "673684452\t",
+        "text": "=Важные сообщения за сегодня:\n\n{{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1104,
+        0
+      ],
+      "id": "cda3cebd-7f80-439c-8856-f3a8f855172c",
+      "name": "Send a text message",
+      "webhookId": "75255ff9-8fb4-45a0-8fe3-2caba58189ec",
+      "credentials": {
+        "telegramApi": {
+          "id": "EwJk8Iyrm9paRR1S",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        384,
+        -160
+      ],
+      "id": "7fbb4498-ccfe-458f-a447-2eaefb169dbc",
+      "name": "Mark a message as read",
+      "webhookId": "a4addc0a-e348-4cc2-b7d9-07317aecb3cc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VhIFfTXt1RduyMZ1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        0
+      ],
+      "id": "d72b1e96-0121-4797-ba2d-e74fa400aa15",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Combine info mesasges",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark a message as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine info mesasges": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "28c88b0a-66a5-41fa-8c1d-3e00cdbb75ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "766dece13ea0aca1bcd85e9b80254a7a6f73718f5f3bf7d50c6f3adca9c61c55"
+  },
+  "id": "9CF8DYVFs0GGNm2u",
+  "tags": []
+}
