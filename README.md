@@ -1,42 +1,52 @@
-# Email-summary
+# Email Summary
 
-# 🤖 n8n Gmail to Telegram Notifier
+## 🤖 n8n Gmail to Telegram Notifier
 
-Интеллектуальная система фильтрации электронной почты, которая автоматически анализирует входящие сообщения Gmail и отправляет уведомления о важных письмах в Telegram.
+An intelligent email filtering system that automatically analyzes incoming Gmail messages and sends notifications about important emails directly to Telegram.
 
-## 📋 Описание
+---
 
-Проект автоматизирует процесс мониторинга электронной почты и персонализированной фильтрации сообщений. Система анализирует входящие письма на основе заданных критериев важности и мгновенно уведомляет пользователя через Telegram о критически важных сообщениях.
+## 📋 Description
 
-## 🎯 Особенности
+This project automates the process of monitoring your inbox and applying personalized message filtering. The system evaluates incoming emails based on predefined importance criteria and instantly notifies you via Telegram about critical messages — so you never miss what matters.
 
-- ✅ Автоматическая проверка новых писем в Gmail
-- ✅ Интеллектуальная фильтрация по уровню важности (1-5)
-- ✅ Мгновенные уведомления в Telegram о важных сообщениях
-- ✅ Красивое форматирование уведомлений с информацией об отправителе
-- ✅ Работа в автоматическом режиме 24/7
+---
 
-## 🛠 Технологии
+## 🎯 Features
 
-- 🔄 **n8n** - автоматизация рабочих процессов
-- 📧 **Gmail API** - доступ к электронной почте
-- 📱 **Telegram Bot API** - отправка уведомлений
-- ☁️ **Cloud Hosting** - непрерывная работа
+- ✅ **Automatic Email Checks**: Regularly scans your Gmail inbox for new messages  
+- ✅ **Smart Importance Scoring**: Rates emails on a scale from 1 (low) to 5 (critical)  
+- ✅ **Instant Telegram Alerts**: Real-time notifications for high-priority emails (level 4–5)  
+- ✅ **Rich Message Formatting**: Clean, readable notifications with sender, subject, and preview  
+- ✅ **24/7 Automation**: Runs continuously without manual intervention  
 
-## 🚀 Начало работы
+---
 
-1. Скопируйте workflow из проекта
-2. Настройте подключение к Gmail и Telegram
-3. Запустите workflow в n8n
-4. Получайте уведомления о важных письмах!
+## 🛠 Technologies Used
 
-## 📊 Как это работает
+- 🔄 **[n8n](https://n8n.io)** – Open-source workflow automation platform  
+- 📧 **Gmail API** – Secure access to your email inbox  
+- 📱 **Telegram Bot API** – Reliable and instant messaging integration  
+- ☁️ **Cloud Hosting** – Ensures 24/7 availability (e.g., on Docker, Kubernetes, or VPS)  
 
-1. Проверяет новые письма каждые X минут
-2. Анализирует содержание и отправителя
-3. Оценивает уровень важности (1-5)
-4. Отправляет уведомление в Telegram только для писем уровня 4-5
+---
 
-## 🤝 Вклад в проект
+## 🚀 Getting Started
 
-Проект открыт для улучшений и доработок. Присылайте свои предложения!
+1. 📥 Copy the workflow from this project into your n8n instance  
+2. 🔧 Configure connections to **Gmail** and **Telegram** (create a bot via @BotFather)  
+3. ⏱ Set the desired polling interval (e.g., every 5–10 minutes)  
+4. ▶️ Activate the workflow and let it run  
+5. 💬 Start receiving smart email alerts in your Telegram!
+
+---
+
+## 📊 How It Works
+
+1. **Polling**: Checks for new emails at regular intervals  
+2. **Analysis**: Evaluates sender, subject, keywords, and content  
+3. **Scoring**: Assigns an importance level (1–5) using custom logic or AI rules  
+4. **Filtering**: Only high-priority emails (level 4–5) trigger notifications  
+5. **Alerting**: Sends a formatted message to your Telegram chat  
+
+---
